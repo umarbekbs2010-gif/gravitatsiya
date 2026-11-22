@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Yagona Veb-Portal — GitHub Loyihasi</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --card: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --success: #16a34a;
+      --danger: #dc2626;
+      --border: #e2e8f0;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #f1f5f9;
+      color: var(--text);
+    }
+
+    .topbar {
+      background: var(--bg);
+      color: #fff;
+      padding: 14px 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .topbar-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .brand {
+      font-size: 19px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      background: var(--surface);
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      padding: 8px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .tab-btn.active, .tab-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .ext-link {
+      background: #0f766e;
+      color: #fff;
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .main {
+      max-width: 1380px;
+      margin: 22px auto;
+      padding: 0 20px 40px;
+    }
+
+    .module-panel { display: none; }
+    .module-panel.active { display: block; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
+      margin-bottom: 18px;
+    }
+
+    .home-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .app-tile {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .app-tile h3 { margin: 0 0 6px; }
+    .app-tile p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    input, select, textarea, button {
+      font-family: inherit;
+      font-size: 14px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      padding: 9px 12px;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      font-weight: 600;
+    }
+
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-success { background: var(--success); color: #fff; }
+    .btn-danger { background: var(--danger); color: #fff; }
+    .btn-muted { background: #e2e8f0; color: #0f172a; }
+
+    .row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 920px) {
+      .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+    }
+
+    th { background: #f8fafc; color: var(--muted); }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .badge-ok { background: #dcfce7; color: #166534; }
+    .badge-no { background: #fee2e2; color: #991b1b; }
+
+    .receipt {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      padding: 12px;
+      border-radius: 8px;
+      font-family: "Courier New", monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span>HUB PORTAL</span>
+      </div>
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="home" onclick="switchTab('home')">Bosh sahifa</button>
+        <button class="tab-btn" data-tab="kundalik" onclick="switchTab('kundalik')">Maktab kundaligi</button>
+        <button class="tab-btn" data-tab="pos" onclick="switchTab('pos')">Market kassa</button>
+        <button class="tab-btn" data-tab="students" onclick="switchTab('students')">O‘quvchilar</button>
+        <button class="tab-btn" data-tab="news" onclick="switchTab('news')">Yangiliklar</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- 1. BOSH SAHIFA -->
+    <section id="panel-home" class="module-panel active">
+      <div class="card">
+        <h2 style="margin-top:0;">Barcha ilovalar bitta joyda</h2>
+        <p style="color:var(--muted); margin-top:0;">
+          Ushbu portal GitHub Pages’ga yuklashga tayyor: barcha bo‘limlar brauzer xotirasida (`localStorage`) mustaqil ishlaydi.
+        </p>
+        <div class="home-grid">
+          <div class="app-tile">
+            <div>
+              <h3>Maktab kundaligi</h3>
+              <p>Sana, fan, mavzu/uy vazifasi va baholarni yuritish.</p>
+            </div>
+            <div class="row" style="margin:0;">
+              <button class="btn-primary" onclick="switchTab('kundalik')">Ichkarida ochish</button>
+              <a class="ext-link" href="kundalik.html">kundalik.html</a>
+            </div>
+          </div>
+
+          <div class="app-tile">
+            <div>
+              <h3>Market kassa (POS)</h3>
+              <p>Mahsulot kodi/nomi bo‘yicha savat, chegirma, qaytim va chek.</p>
+            </div>
+            <div class="row" style="margin:0;">
+              <button class="btn-primary" onclick="switchTab('pos')">Ichkarida ochish</button>
+              <a class="ext-link" href="market_kassa.html">market_kassa.html</a>
+            </div>
+          </div>
+
+          <div class="app-tile">
+            <div>
+              <h3>O‘quvchilar ro‘yxati</h3>
+              <p>Ro‘yxatga olish, tahrirlash, to‘lov holati va CSV eksport.</p>
+            </div>
+            <div class="row" style="margin:0;">
+              <button class="btn-primary" onclick="switchTab('students')">Ichkarida ochish</button>
+              <a class="ext-link" href="oquvchilar_royxati.html">oquvchilar_royxati.html</a>
+            </div>
+          </div>
+
+          <div class="app-tile">
+            <div>
+              <h3>Yangiliklar portali</h3>
+              <p>Bo‘limlar bo‘yicha filtrlash, qidirish, o‘qish va xabar qo‘shish.</p>
+            </div>
+            <div class="row" style="margin:0;">
+              <button class="btn-primary" onclick="switchTab('news')">Ichkarida ochish</button>
+              <a class="ext-link" href="yangiliklar_portali.html">yangiliklar_portali.html</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. MAKTAB KUNDALIGI -->
+    <section id="panel-kundalik" class="module-panel">
+      <div class="card">
+        <h2 style="margin-top:0;">Maktab kundaligi</h2>
+        <div class="row">
+          <input type="date" id="kDate" />
+          <input type="text" id="kSubject" placeholder="Fan nomi (masalan: Matematika)" />
+          <input type="text" id="kTopic" placeholder="Mavzu yoki uy vazifasi" style="flex:1; min-width:180px;" />
+          <select id="kGrade">
+            <option value="5">5 baho</option>
+            <option value="4">4 baho</option>
+            <option value="3">3 baho</option>
+            <option value="2">2 baho</option>
+          </select>
+          <button class="btn-primary" onclick="kAdd()">Qo‘shish</button>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Sana</th><th>Fan</th><th>Mavzu / Vazifa</th><th>Baho</th><th>Amal</th></tr>
+          </thead>
+          <tbody id="kBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. MARKET KASSA -->
+    <section id="panel-pos" class="module-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin-top:0;">Mahsulotlar va ombor</h2>
+          <div class="row">
+            <input type="text" id="pSearch" placeholder="Kod yoki nom (masalan: 478001)" oninput="pRender()" style="flex:1;" />
+            <button class="btn-primary" onclick="pQuickAdd()">Tez qo‘shish</button>
+          </div>
+          <table>
+            <thead><tr><th>Kod</th><th>Nomi</th><th>Narx</th><th>Qoldiq</th><th></th></tr></thead>
+            <tbody id="pProductsBody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <h2 style="margin-top:0;">Savat va to‘lov</h2>
+          <table>
+            <thead><tr><th>Mahsulot</th><th>Soni</th><th>Jami</th><th></th></tr></thead>
+            <tbody id="pCartBody"></tbody>
+          </table>
+          <div class="row" style="margin-top:12px; align-items:center;">
+            <label>Chegirma (%): <input type="number" id="pDisc" value="0" min="0" max="100" style="width:80px;" oninput="pRenderCart()" /></label>
+            <select id="pPayMethod" onchange="pRenderCart()">
+              <option value="Naqd">Naqd</option>
+              <option value="Karta">Karta</option>
+              <option value="Click/Payme">Click/Payme</option>
+            </select>
+            <input type="number" id="pCash" placeholder="Berilgan summa" style="width:140px;" oninput="pRenderCart()" />
+          </div>
+          <p><strong>Jami to‘lov: <span id="pTotalText">0 so‘m</span></strong> | Qaytim: <strong id="pChangeText">0 so‘m</strong></p>
+          <button class="btn-success" onclick="pCheckout()">To‘lovni yakunlash</button>
+          <div class="receipt" id="pReceipt">Chek shu yerda chiqadi...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. O'QUVCHILAR RO'YXATI -->
+    <section id="panel-students" class="module-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin-top:0;">O‘quvchini ro‘yxatga olish</h2>
+          <div class="row">
+            <input type="text" id="sName" placeholder="F.I.Sh." style="flex:1; min-width:180px;" />
+            <input type="tel" id="sPhone" placeholder="+998 90 123 45 67" />
+          </div>
+          <div class="row">
+            <input type="text" id="sGroup" placeholder="Guruh / Sinf (masalan: 9-A)" />
+            <input type="number" id="sFee" placeholder="To'lov (so'm)" />
+            <select id="sStatus">
+              <option value="To'langan">To‘langan</option>
+              <option value="To'lanmagan">To‘lanmagan</option>
+            </select>
+            <button class="btn-primary" onclick="sAdd()">Saqlash</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 style="margin-top:0;">Ro‘yxat (<span id="sCount">0</span>)</h2>
+          <input type="text" id="sSearch" placeholder="Ism yoki guruh bo‘yicha qidirish..." oninput="sRender()" style="width:100%; margin-bottom:10px;" />
+          <table>
+            <thead><tr><th>F.I.Sh.</th><th>Guruh</th><th>To‘lov</th><th>Holat</th><th></th></tr></thead>
+            <tbody id="sBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. YANGILIKLAR PORTALI -->
+    <section id="panel-news" class="module-panel">
+      <div class="grid-2">
+        <div class="card">
+          <h2 style="margin-top:0;">So‘nggi yangiliklar</h2>
+          <div class="row">
+            <input type="text" id="nSearch" placeholder="Qidirish..." oninput="nRender()" style="flex:1;" />
+            <select id="nCat" onchange="nRender()">
+              <option value="Barchasi">Barchasi</option>
+              <option value="O‘zbekiston">O‘zbekiston</option>
+              <option value="Texnologiya">Texnologiya</option>
+              <option value="Iqtisodiyot">Iqtisodiyot</option>
+            </select>
+          </div>
+          <div id="nList"></div>
+        </div>
+
+        <div class="card">
+          <h2 style="margin-top:0;">Yangi xabar qo‘shish</h2>
+          <div class="row" style="flex-direction:column;">
+            <input type="text" id="nTitle" placeholder="Sarlavha" />
+            <select id="nNewCat">
+              <option value="O‘zbekiston">O‘zbekiston</option>
+              <option value="Texnologiya">Texnologiya</option>
+              <option value="Iqtisodiyot">Iqtisodiyot</option>
+            </select>
+            <textarea id="nBody" rows="4" placeholder="Xabar matni..."></textarea>
+            <button class="btn-primary" onclick="nAdd()">Chop etish</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const money = n => Number(n || 0).toLocaleString("uz-UZ") + " so‘m";
+
+    function switchTab(tab) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      document.querySelectorAll(".module-panel").forEach(p => p.classList.remove("active"));
+      document.getElementById("panel-" + tab).classList.add("active");
+    }
+
+    // --- KUNDALIK ---
+    let kEntries = JSON.parse(localStorage.getItem("hub_kundalik")) || [];
+    function kAdd() {
+      const date = document.getElementById("kDate").value;
+      const subject = document.getElementById("kSubject").value.trim();
+      const topic = document.getElementById("kTopic").value.trim();
+      const grade = document.getElementById("kGrade").value;
+      if (!date || !subject || !topic) return alert("Sana, fan va mavzuni kiriting.");
+      kEntries.push({ id: Date.now(), date, subject, topic, grade });
+      localStorage.setItem("hub_kundalik", JSON.stringify(kEntries));
+      document.getElementById("kSubject").value = "";
+      document.getElementById("kTopic").value = "";
+      kRender();
+    }
+    function kDel(id) {
+      kEntries = kEntries.filter(x => x.id !== id);
+      localStorage.setItem("hub_kundalik", JSON.stringify(kEntries));
+      kRender();
+    }
+    function kRender() {
+      const tb = document.getElementById("kBody");
+      tb.innerHTML = kEntries.map(x => `
+        <tr><td>${x.date}</td><td>${x.subject}</td><td>${x.topic}</td><td><strong>${x.grade}</strong></td>
+        <td><button class="btn-danger" onclick="kDel(${x.id})">O‘chir</button></td></tr>
+      `).join("") || "<tr><td colspan='5'>Yozuvlar yo‘q</td></tr>";
+    }
+
+    // --- MARKET KASSA ---
+    let pProducts = JSON.parse(localStorage.getItem("hub_pos_prod")) || [
+      { code: "478001", name: "Sut (1L)", price: 12000, stock: 25 },
+      { code: "478002", name: "Non", price: 3500, stock: 40 },
+      { code: "478003", name: "Shakar (1kg)", price: 14500, stock: 20 }
+    ];
+    let pCart = [];
+    function pRender() {
+      const q = document.getElementById("pSearch").value.trim().toLowerCase();
+      const list = pProducts.filter(p => p.code.toLowerCase().includes(q) || p.name.toLowerCase().includes(q));
+      document.getElementById("pProductsBody").innerHTML = list.map(p => `
+        <tr><td>${p.code}</td><td>${p.name}</td><td>${money(p.price)}</td><td>${p.stock}</td>
+        <td><button class="btn-primary" onclick="pAddToCart('${p.code}')">+ Savat</button></td></tr>
+      `).join("");
+      pRenderCart();
+    }
+    function pQuickAdd() {
+      const q = document.getElementById("pSearch").value.trim().toLowerCase();
+      const hit = pProducts.find(p => p.code.toLowerCase() === q || p.name.toLowerCase().includes(q));
+      if (hit) { pAddToCart(hit.code); document.getElementById("pSearch").value = ""; pRender(); }
+    }
+    function pAddToCart(code) {
+      const p = pProducts.find(x => x.code === code);
+      if (!p || p.stock <= 0) return alert("Mahsulot tugagan.");
+      const item = pCart.find(i => i.code === code);
+      if (item) { if (item.qty < p.stock) item.qty++; }
+      else pCart.push({ code: p.code, name: p.name, price: p.price, qty: 1 });
+      pRenderCart();
+    }
+    function pRenderCart() {
+      document.getElementById("pCartBody").innerHTML = pCart.map(i => `
+        <tr><td>${i.name}</td><td>${i.qty}</td><td>${money(i.price * i.qty)}</td>
+        <td><button class="btn-danger" onclick="pCart=pCart.filter(x=>x.code!=='${i.code}');pRenderCart()">X</button></td></tr>
+      `).join("") || "<tr><td colspan='4'>Savat bo‘sh</td></tr>";
+      const sub = pCart.reduce((s, i) => s + i.price * i.qty, 0);
+      const disc = Math.min(100, Math.max(0, Number(document.getElementById("pDisc").value) || 0));
+      const total = Math.round(sub * (1 - disc / 100));
+      const cash = Number(document.getElementById("pCash").value) || 0;
+      const change = document.getElementById("pPayMethod").value === "Naqd" && cash > total ? cash - total : 0;
+      document.getElementById("pTotalText").textContent = money(total);
+      document.getElementById("pChangeText").textContent = money(change);
+    }
+    function pCheckout() {
+      if (!pCart.length) return alert("Savat bo‘sh.");
+      const sub = pCart.reduce((s, i) => s + i.price * i.qty, 0);
+      const disc = Math.min(100, Math.max(0, Number(document.getElementById("pDisc").value) || 0));
+      const total = Math.round(sub * (1 - disc / 100));
+      pCart.forEach(i => { const pr = pProducts.find(x => x.code === i.code); if (pr) pr.stock = Math.max(0, pr.stock - i.qty); });
+      localStorage.setItem("hub_pos_prod", JSON.stringify(pProducts));
+      document.getElementById("pReceipt").textContent =
+        "=== CHEK ===\n" +
+        pCart.map(i => `${i.name} x${i.qty} = ${money(i.price * i.qty)}`).join("\n") +
+        `\nJAMI: ${money(total)}\nRahmat!`;
+      pCart = [];
+      pRender();
+    }
+
+    // --- O'QUVCHILAR ---
+    let sList = JSON.parse(localStorage.getItem("hub_students")) || [];
+    function sAdd() {
+      const name = document.getElementById("sName").value.trim();
+      const phone = document.getElementById("sPhone").value.trim();
+      const group = document.getElementById("sGroup").value.trim();
+      const fee = Number(document.getElementById("sFee").value) || 0;
+      const status = document.getElementById("sStatus").value;
+      if (!name || !group) return alert("F.I.Sh. va guruhni kiriting.");
+      sList.unshift({ id: Date.now(), name, phone, group, fee, status });
+      localStorage.setItem("hub_students", JSON.stringify(sList));
+      document.getElementById("sName").value = "";
+      document.getElementById("sPhone").value = "";
+      document.getElementById("sGroup").value = "";
+      document.getElementById("sFee").value = "";
+      sRender();
+    }
+    function sToggle(id) {
+      const st = sList.find(x => x.id === id);
+      if (st) { st.status = st.status === "To'langan" ? "To'lanmagan" : "To'langan"; localStorage.setItem("hub_students", JSON.stringify(sList)); sRender(); }
+    }
+    function sRender() {
+      const q = document.getElementById("sSearch").value.trim().toLowerCase();
+      const rows = sList.filter(x => x.name.toLowerCase().includes(q) || x.group.toLowerCase().includes(q));
+      document.getElementById("sCount").textContent = sList.length;
+      document.getElementById("sBody").innerHTML = rows.map(x => `
+        <tr><td>${x.name}</td><td>${x.group}</td><td>${money(x.fee)}</td>
+        <td><span class="badge ${x.status === "To'langan" ? "badge-ok" : "badge-no"}">${x.status}</span></td>
+        <td><button class="btn-muted" onclick="sToggle(${x.id})">Holat</button></td></tr>
+      `).join("") || "<tr><td colspan='5'>O‘quvchi yo‘q</td></tr>";
+    }
+
+    // --- YANGILIKLAR ---
+    let nList = JSON.parse(localStorage.getItem("hub_news")) || [
+      { id: 1, title: "GitHub Pages’da bepul sayt ochish", cat: "Texnologiya", body: "HTML, CSS va JS loyihalarni bir necha daqiqada internetga chiqarish mumkin." }
+    ];
+    function nAdd() {
+      const title = document.getElementById("nTitle").value.trim();
+      const cat = document.getElementById("nNewCat").value;
+      const body = document.getElementById("nBody").value.trim();
+      if (!title || !body) return alert("Sarlavha va matnni kiriting.");
+      nList.unshift({ id: Date.now(), title, cat, body });
+      localStorage.setItem("hub_news", JSON.stringify(nList));
+      document.getElementById("nTitle").value = "";
+      document.getElementById("nBody").value = "";
+      nRender();
+    }
+    function nRender() {
+      const q = document.getElementById("nSearch").value.trim().toLowerCase();
+      const cat = document.getElementById("nCat").value;
+      const items = nList.filter(x => (cat === "Barchasi" || x.cat === cat) && (!q || x.title.toLowerCase().includes(q) || x.body.toLowerCase().includes(q)));
+      document.getElementById("nList").innerHTML = items.map(x => `
+        <div style="border-bottom:1px solid #e2e8f0; padding:10px 0;">
+          <small style="color:#2563eb; font-weight:700;">${x.cat}</small>
+          <h4 style="margin:4px 0;">${x.title}</h4>
+          <p style="margin:0; font-size:13px; color:#334155;">${x.body}</p>
+        </div>
+      `).join("") || "<p>Yangilik topilmadi.</p>";
+    }
+
+    document.getElementById("kDate").value = new Date().toISOString().slice(0, 10);
+    kRender(); pRender(); sRender(); nRender();
+  </script>
+</body>
+</html>
